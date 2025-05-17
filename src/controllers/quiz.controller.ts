@@ -35,6 +35,17 @@ export const generateQuizHandler = [
         });
       }
 
+            // Validate required fields
+      const requiredFields = ["topic", "academicLevel", "numberOfQuestions", "difficulty"];
+      for (const field of requiredFields) {
+        if (!input.topic || !input.academicLevel || !input.numberOfQuestions || !input.difficulty) {
+          return res.status(400).json({
+            success: false,
+            message: `Missing required field: ${field}`,
+          });
+        }
+      }
+
       if (req.file) {
         input.file = req.file;
       }
