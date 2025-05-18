@@ -15,6 +15,7 @@ import { swaggerSpec } from './config/swagger';
 const cron = require('node-cron');
 import quizRoutes from './routes/quiz.route';
 import quizHistoryRoutes from './routes/quizHistory.routes';
+import achievementRoutes from './routes/achievement.route';
 
 
 
@@ -73,6 +74,9 @@ app.use('/api/studyResources', studyResourceRoutes);  // study resources
 // The quiz Route
 app.use('/api/quiz', quizRoutes);
 app.use('/api/quiz/h', quizHistoryRoutes);
+
+// The Achievement Route
+app.use('/api/achievements', achievementRoutes); // achievements
 
 
 // Swagger documentation

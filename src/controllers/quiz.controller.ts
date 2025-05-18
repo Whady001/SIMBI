@@ -35,7 +35,7 @@ export const generateQuizHandler = [
         });
       }
 
-            // Validate required fields
+      // Validate required fields
       const requiredFields = ["topic", "academicLevel", "numberOfQuestions", "difficulty"];
       for (const field of requiredFields) {
         if (!input.topic || !input.academicLevel || !input.numberOfQuestions || !input.difficulty) {
@@ -131,9 +131,14 @@ export const getQuizScoreHandler = async (
       });
     }
 
-    const score = await quizService.getQuizScore(quizId, userId);
-    const percentage = (score.score / score.total) * 100;
-    res.json({score, percentage});
+    const result = await quizService.getQuizScore(quizId, userId);
+    const percentage = (result.score / result.total) * 100;
+    res.json({
+      score: result.score,
+      total: result.total,
+      percentage,
+      achievementGranted: result.achievementGranted || false,
+    });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       // Handle validation errors

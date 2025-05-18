@@ -3,6 +3,8 @@ import { IQuizInput, QuizQuestion } from "../interfaces/quiz.types";
 import { QuizModel, IQuiz } from "../models/quiz.model";
 import fs from 'fs';
 import pdf from 'pdf-parse';
+import { grantAchievementNFT } from "./achievement.service";
+import User from "../models/user";
 
 export async function generateQuiz(input: IQuizInput): Promise<QuizQuestion[]> {
   if (!input) {
@@ -160,7 +162,7 @@ export async function submitAnswer(userId: string, quizId: string, questionIndex
 }
 
 
-export async function getQuizScore(quizId: string, userId: string): Promise<{ score: number; total: number }> {
+export async function getQuizScore(quizId: string, userId: string): Promise<{ score: number; total: number; achievementGranted: boolean }> {
   // Fetch the quiz by ID and user ID
   const quiz = await QuizModel.findOne({ _id: quizId, userId });
   if (!quiz) throw new Error('Quiz not found');
@@ -174,8 +176,18 @@ export async function getQuizScore(quizId: string, userId: string): Promise<{ sc
       score++;
     }
   });
+  // Grant achievement if perfect score and difficulty is 'hard'
+  let achievementGranted: boolean = false;
+  if (score/total === 1) {
+    const user = await User.findById(userId);
+    if (user && user.externalWalletAddress) {
+      await grantAchievementNFT(user._id, user.externalWalletAddress, "Quiz_Perfect_Score")
+      achievementGranted = true;
+    }
+  }
 
-  return { score, total };
+  return { score, total, achievementGranted };
+  
 }
 
 export async function getQuizById(quizId: string, userId:string): Promise<IQuiz | null> {

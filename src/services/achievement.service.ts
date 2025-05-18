@@ -37,7 +37,7 @@ export async function grantAchievementNFT(
 
   const { name, tokenURI } = metadata;
   const description = `NFT awarded for milestone: ${name}`;
-  const image = `${tokenURI}/image.png`; // assuming a standard path
+  const image = `${tokenURI}/image.png`; 
 
   try {
     const txHash = await NFTService.mintAchievement(userWallet, achievementType, tokenURI);
@@ -61,5 +61,9 @@ export async function grantAchievementNFT(
   }
 }
 
+
+export async function getUserAchievements(userId: string) {
+  return AchievementModel.find({ userId });
+}
 
 
